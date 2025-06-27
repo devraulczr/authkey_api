@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Licenças</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        /* Estilos da Navbar */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+        }
+
+        .navbar .active {
+            background-color: #04AA6D;
+        }
+
+        /* Estilos do conteúdo principal */
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .result-box pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/files/key/melhoraim">Arquivos</a>
+        <a href="/upload/key/melhoraim">Upload</a>
+        <a href="/last-file/key/melhoraim">Último Arquivo</a>
+        <a href="/login">Login</a>
+    </div>
+
+    <div class="container">
+        <h1>Painel de Licenças</h1>
+
+        <!-- Gerar Chaves -->
+        <div class="form-group" id="generate-keys">
+            <h3>Gerar Chaves</h3>
+            <label for="key-type">Tipo de Chave:</label>
+            <select id="key-type">
+                <option value="1hora">1 Hora</option>
+                <option value="diario">Diário</option>
+                <option value="semanal">Semanal</option>
+                <option value="quinzena">Quinzena</option>
+                <option value="mensal">Mensal</option>
+                <option value="permanente">Permanente</option>
+                <option value="trimestral">Trimestral</option>
+            </select>
+            <label for="app-name">Tipo de Chave:</label>
+            <select id="app-name">
+                <option value="aim-assist">Aim Assist</option>
+                <option value="mk-panel">Mk Panel - Valorant</option>
+            </select>
+            <label for="quantity">Quantidade de Chaves:</label>
+            <input type="number" id="quantity" value="1" min="1" max="100">
+            <button onclick="generateKeys()">Gerar e Inserir</button>
+        </div>
+
+        <!-- Resultado -->
+        <div class="result-box" id="output"></div>
+
+        <!-- HWID vazio -->
+        <div class="form-group">
+            <h3>HWID Vazio</h3>
+            <button onclick="getHwidVazio()">Buscar HWID Vazio</button>
+            <button onclick="deleteHwidVazio()">Deletar HWIDs Vazios</button>
+        </div>
+
+        <!-- Deletar Chave -->
+        <div class="form-group">
+            <h3>Deletar Licença</h3>
+            <label for="delete-key">Digite a License Key para deletar:</label>
+            <input type="text" id="delete-key">
+            <button onclick="deleteKey()">Deletar</button>
+        </div>
+        
+        <div class="form-group">
+            <h3>Resetar HWID</h3>
+            <label for="reset-key">Digite a License Key para resetar HWID:</label>
+            <input type="text" id="reset-key">
+            <button onclick="resetHwid()">Resetar HWID</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://167.114.206.209:3063/api'; // URL do seu backend Node.js
+
+        // Função para gerar as chaves
+        function generateKeys() {
+            const keyType = document.getElementById('key-type').value;
+            const quantity = document.getElementById('quantity').value;
+            const app_name = document.getElementById('app-name').value;
+
+            fetch(`${API_URL}/generate-keys`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    key_type: keyType,
+                    quantity: quantity,
+                    admin: true,
+                    app: app_name
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const output = document.getElementById('output');
+                output.innerHTML = `<h4>Chaves Geradas:</h4><pre>${data.keys.join('\n')}</pre>`;
+            })
+            .catch(error => console.error('Erro ao gerar chaves:', error));
+        }
+
+        function resetHwid() {
+            const key = document.getElementById('reset-key').value;
+
+            fetch(`${API_URL}/reset-hwid`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ key })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Erro ao resetar HWID:', error);
+            });
+        }
+
+        // Função para buscar HWID vazio
+        function getHwidVazio() {
+            fetch(`${API_URL}/get-hwid-vazio`)
+            .then(response => response.json())
+            .then(data => {
+                const output = document.getElementById('output');
+                output.innerHTML = `<h4>HWID Vazio:</h4><pre>${data.keys.join('\n')}</pre>`;
+            })
+            .catch(error => console.error('Erro ao buscar HWID vazio:', error));
+        }
+
+        // Função para deletar HWID vazio
+        function deleteHwidVazio() {
+            fetch(`${API_URL}/delete-hwid-vazio`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => alert('HWIDs vazios deletados com sucesso!'))
+            .catch(error => console.error('Erro ao deletar HWIDs vazios:', error));
+        }
+
+        // Função para deletar uma chave
+        function deleteKey() {
+            const key = document.getElementById('delete-key').value;
+
+            fetch(`${API_URL}/delete-key`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ key })
+            })
+            .then(response => response.json())
+            .then(data => alert('Chave deletada com sucesso!'))
+            .catch(error => console.error('Erro ao deletar chave:', error));
+        }
+    </script>
+</body>
+</html>

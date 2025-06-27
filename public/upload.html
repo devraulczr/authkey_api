@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload de Arquivos</title>
+  <style>
+    /* Reset básico */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding-top: 60px; /* Adicionando espaço no topo para não sobrepor a navbar */
+    }
+
+    /* Navbar fixa no topo */
+    .navbar {
+      background-color: #333;
+      width: 100%;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      position: fixed; /* Fixa a navbar no topo */
+      top: 0;
+      left: 0;
+      z-index: 1000; /* Garante que fique acima do conteúdo */
+    }
+
+    .navbar a {
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #575757;
+    }
+
+    .navbar .active {
+      background-color: #04AA6D;
+    }
+
+    /* Container do formulário */
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      margin-top: 80px; /* Espaço para a navbar fixa */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Mensagem de feedback */
+    #message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      .navbar {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/files/key/melhoraim">Arquivos</a>
+        <a href="/upload/key/melhoraim">Upload</a>
+        <a href="/last-file/key/melhoraim">Último Arquivo</a>
+        <a href="/login">Login</a>
+    </div>
+  <div class="container">
+    <h1>Upload de Arquivo</h1>
+    <form id="uploadForm">
+      <div class="input-group">
+        <label for="user">Nome de Usuário:</label>
+        <input type="text" id="user" name="user" required>
+      </div>
+      <div class="input-group">
+        <label for="file">Escolha um arquivo:</label>
+        <input type="file" id="file" name="file" required>
+      </div>
+      <button type="submit">Enviar Arquivo</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    const apiUrl = 'http://167.114.206.209:3063'; // Defina aqui a URL base da sua API
+
+    document.getElementById('uploadForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = new FormData();
+      formData.append('file', document.getElementById('file').files[0]);
+      formData.append('user', document.getElementById('user').value);
+
+      fetch(`${apiUrl}/upload`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('message').textContent = 'Arquivo enviado com sucesso!';
+        document.getElementById('message').style.color = 'green';
+      })
+      .catch(error => {
+        document.getElementById('message').textContent = 'Erro ao enviar arquivo!';
+        document.getElementById('message').style.color = 'red';
+      });
+    });
+  </script>
+</body>
+</html>

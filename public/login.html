@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      padding-top: 60px; /* Altura da navbar para não sobrepor o conteúdo */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .navbar {
+      background-color: #333;
+      width: 100%;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      position: fixed; /* Fixa a navbar no topo */
+      top: 0;
+      left: 0;
+      z-index: 1000; /* Garante que fique acima do conteúdo */
+    }
+
+    .navbar a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .navbar a:hover {
+      background-color: #575757;
+    }
+
+    .navbar .active {
+      background-color: #04AA6D;
+    }
+
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="/files/key/melhoraim">Arquivos</a>
+    <a href="/upload/key/melhoraim">Upload</a>
+    <a href="/last-file/key/melhoraim">Último Arquivo</a>
+    <a href="/login" class="">Login</a>
+  </div>
+
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="user">Usuário:</label>
+        <input type="text" id="user" name="user" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const user = document.getElementById('user').value;
+      const password = document.getElementById('password').value;
+      const url = `/painel/${user}/key/${password}`;
+      window.location.href = url;
+    });
+  </script>
+
+</body>
+</html>
